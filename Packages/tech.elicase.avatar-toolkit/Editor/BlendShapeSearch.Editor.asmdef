@@ -1,0 +1,7 @@
+{
+  "name": "BlendShapeSearch.Editor",
+  "rootNamespace": "BlendShapeSearch",
+  "includePlatforms": [
+    "Editor"
+  ]
+}
