@@ -12,15 +12,36 @@ namespace BlendShapeSearch
         internal const string RootAssetPath = "Assets/ElicaseAvatarToolkit";
         internal const string OutputsAssetPath = RootAssetPath + "/Outputs";
         internal const string LanguagesAssetPath = RootAssetPath + "/Langs";
-        internal const string I18nAssetPath = RootAssetPath + "/i18n";
+        internal const string PackageI18nAssetPath = "Packages/tech.elicase.avatar-toolkit/i18n";
 
         internal static string OutputsAbsolutePath => ToAbsolutePath(OutputsAssetPath);
         internal static string LanguagesAbsolutePath => ToAbsolutePath(LanguagesAssetPath);
-        internal static string I18nAbsolutePath => ToAbsolutePath(I18nAssetPath);
+        internal static string PackageI18nAbsolutePath => ToAbsolutePath(PackageI18nAssetPath);
+
+        internal static void EnsureAssetFolders()
+        {
+            var createdFolder = EnsureDirectoryExists(RootAssetPath);
+            createdFolder |= EnsureDirectoryExists(OutputsAssetPath);
+            createdFolder |= EnsureDirectoryExists(LanguagesAssetPath);
+
+            if (createdFolder)
+            {
+                AssetDatabase.Refresh();
+            }
+        }
+
+        internal static void EnsureLanguageFolder(string language)
+        {
+            EnsureAssetFolders();
+            if (!string.IsNullOrWhiteSpace(language) && EnsureDirectoryExists(LanguagesAssetPath + "/" + language))
+            {
+                AssetDatabase.Refresh();
+            }
+        }
 
         internal static string CreateOutputPath(string filenamePrefix)
         {
-            Directory.CreateDirectory(OutputsAbsolutePath);
+            EnsureAssetFolders();
             return Path.Combine(OutputsAbsolutePath, filenamePrefix + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + ".yml");
         }
 
@@ -40,6 +61,18 @@ namespace BlendShapeSearch
         private static string ToAbsolutePath(string assetPath)
         {
             return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), assetPath));
+        }
+
+        private static bool EnsureDirectoryExists(string assetPath)
+        {
+            var absolutePath = ToAbsolutePath(assetPath);
+            if (Directory.Exists(absolutePath))
+            {
+                return false;
+            }
+
+            Directory.CreateDirectory(absolutePath);
+            return true;
         }
     }
 
@@ -63,10 +96,11 @@ namespace BlendShapeSearch
 
         internal static IReadOnlyList<string> GetLanguages()
         {
+            BlendShapeSearchPaths.EnsureAssetFolders();
             var languages = new List<string>();
-            if (Directory.Exists(BlendShapeSearchPaths.I18nAbsolutePath))
+            if (Directory.Exists(BlendShapeSearchPaths.PackageI18nAbsolutePath))
             {
-                languages.AddRange(Directory.GetFiles(BlendShapeSearchPaths.I18nAbsolutePath, "*.yml")
+                languages.AddRange(Directory.GetFiles(BlendShapeSearchPaths.PackageI18nAbsolutePath, "*.yml")
                     .Select(Path.GetFileNameWithoutExtension)
                     .OrderBy(language => language, StringComparer.Ordinal));
             }
@@ -154,14 +188,16 @@ namespace BlendShapeSearch
 
         private static void LoadLanguageResources()
         {
-            var englishPath = Path.Combine(BlendShapeSearchPaths.I18nAbsolutePath, "en-us.yml");
-            var languagePath = Path.Combine(BlendShapeSearchPaths.I18nAbsolutePath, currentLanguage + ".yml");
+            BlendShapeSearchPaths.EnsureAssetFolders();
+            var englishPath = Path.Combine(BlendShapeSearchPaths.PackageI18nAbsolutePath, "en-us.yml");
+            var languagePath = Path.Combine(BlendShapeSearchPaths.PackageI18nAbsolutePath, currentLanguage + ".yml");
             uiTexts = ReadYamlFile(englishPath);
             foreach (var entry in ReadYamlFile(languagePath))
             {
                 uiTexts[entry.Key] = entry.Value;
             }
 
+            BlendShapeSearchPaths.EnsureLanguageFolder(currentLanguage);
             var translationDirectory = Path.Combine(BlendShapeSearchPaths.LanguagesAbsolutePath, currentLanguage);
             if (!Directory.Exists(translationDirectory))
             {
