@@ -1,0 +1,21 @@
+.codegraph/.gitignore
+  s_d6f561b5477ead::t_e125ab35501514 1-5
+Packages/tech.elicase.avatar-toolkit/Editor/BlendShapeSearchLocalization.cs
+  s_d6f561b5477ead::t_b0af3f0bfff6a9 15,19-40,44,65-76,99,101,103,191-193,200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e29a90750b82cd177d7a8737e010b4916d7ac1e6",
+  "prompts": {},
+  "sessions": {
+    "s_d6f561b5477ead": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f654f-62ef-7280-8d07-b914351a6f2f",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
