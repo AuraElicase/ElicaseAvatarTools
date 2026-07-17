@@ -14,12 +14,14 @@ namespace BlendShapeSearch
     [CanEditMultipleObjects]
     public sealed class SkinnedMeshRendererBlendShapeSearchEditor : Editor
     {
+        private static readonly Type BuiltInEditorType = ResolveBuiltInEditorType();
         private const string BlendShapeWeightsPropertyPath = "m_BlendShapeWeights";
         private const string MeshPropertyPath = "m_Mesh";
         private const string SliderClassName = "blend-shape-search-slider";
         private const string EmptyStateName = "blend-shape-search-empty-state";
 
         private readonly HashSet<int> selectedBlendShapeIndices = new HashSet<int>();
+        private Editor builtInEditor;
         private VisualElement root;
         private VisualElement blendShapeList;
         private Button exportButton;
@@ -34,13 +36,20 @@ namespace BlendShapeSearch
             {
                 Undo.undoRedoPerformed += RefreshBlendShapeList;
                 BlendShapeSearchLocalization.LanguageChanged += RebuildInspector;
+                ElicaseAvatarToolkitComponentSettings.Changed += RebuildInspector;
             });
             root.RegisterCallback<DetachFromPanelEvent>(_ =>
             {
                 Undo.undoRedoPerformed -= RefreshBlendShapeList;
                 BlendShapeSearchLocalization.LanguageChanged -= RebuildInspector;
+                ElicaseAvatarToolkitComponentSettings.Changed -= RebuildInspector;
             });
             return root;
+        }
+
+        private void OnDisable()
+        {
+            DestroyBuiltInEditor();
         }
 
         private void RebuildInspector()
@@ -57,24 +66,66 @@ namespace BlendShapeSearch
             root.Clear();
             blendShapeList = null;
             exportButton = null;
+
+            if (!ElicaseAvatarToolkitComponentSettings.IsBlendShapeSearchEnabled)
+            {
+                AddBuiltInInspector(root);
+                return;
+            }
+
+            DestroyBuiltInEditor();
             AddBlendShapeSection(root);
-            AddDefaultProperties(root);
+            AddDefaultProperties(root, false);
             root.Bind(serializedObject);
             TrackBlendShapeDependencies(root);
         }
 
-        private void AddDefaultProperties(VisualElement container)
+        private void AddBuiltInInspector(VisualElement container)
+        {
+            if (BuiltInEditorType != null)
+            {
+                CreateCachedEditor(targets, BuiltInEditorType, ref builtInEditor);
+                container.Add(new IMGUIContainer(() =>
+                {
+                    if (builtInEditor != null)
+                    {
+                        builtInEditor.OnInspectorGUI();
+                    }
+                }));
+                return;
+            }
+
+            AddDefaultProperties(container, true);
+            container.Bind(serializedObject);
+        }
+
+        private void DestroyBuiltInEditor()
+        {
+            if (builtInEditor != null)
+            {
+                DestroyImmediate(builtInEditor);
+                builtInEditor = null;
+            }
+        }
+
+        private void AddDefaultProperties(VisualElement container, bool includeBlendShapeWeights)
         {
             var property = serializedObject.GetIterator();
             var enterChildren = true;
             while (property.NextVisible(enterChildren))
             {
                 enterChildren = false;
-                if (property.propertyPath != BlendShapeWeightsPropertyPath)
+                if (includeBlendShapeWeights || property.propertyPath != BlendShapeWeightsPropertyPath)
                 {
                     container.Add(new PropertyField(property.Copy()));
                 }
             }
+        }
+
+        private static Type ResolveBuiltInEditorType()
+        {
+            return Type.GetType("UnityEditor.SkinnedMeshRendererEditor, UnityEditor")
+                   ?? Type.GetType("UnityEditor.SkinnedMeshRendererEditor, UnityEditor.CoreModule");
         }
 
         private void AddBlendShapeSection(VisualElement container)

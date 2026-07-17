@@ -1,7 +1,7 @@
 {
   "name": "tech.elicase.avatar-toolkit",
   "displayName": "Elicase Avatar Toolkit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "unity": "2022.3",
   "description": "A toolkit for better avatar creation and management in VRChat.",
   "vrchatVersion": "2022.1.1",
