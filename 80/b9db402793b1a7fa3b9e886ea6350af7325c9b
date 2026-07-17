@@ -1,0 +1,40 @@
+Packages/tech.elicase.avatar-toolkit/package.json
+  h_8e6780fc7b4bb1 4
+Packages/tech.elicase.avatar-toolkit/Editor/SkinnedMeshRendererBlendShapeSearchEditor.cs
+  s_e32559ab2e75c8::t_aa9a9978c7f43f 17,24,39,45,50-54,69-76,78,83-111,118,125-130
+Packages/tech.elicase.avatar-toolkit/i18n/en-us.yml
+  s_d6f561b5477ead::t_98472ba33a29b3 14-16
+Packages/tech.elicase.avatar-toolkit/i18n/ja-jp.yml
+  s_e32559ab2e75c8::t_3c9ec39caa45c4 14-16
+Packages/tech.elicase.avatar-toolkit/i18n/zh-cn.yml
+  s_e32559ab2e75c8::t_2ee4e3b240b306 14-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "80b9db402793b1a7fa3b9e886ea6350af7325c9b",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_d6f561b5477ead": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f654f-62ef-7280-8d07-b914351a6f2f",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    },
+    "s_e32559ab2e75c8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f6ef3-8629-7aa1-98ce-09400838c011",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
