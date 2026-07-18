@@ -50,6 +50,7 @@ namespace BlendShapeSearch
                 }
                 else
                 {
+                    ElicaseAvatarToolkitInspectorTitleTranslator.ApplyToAddComponentDropdown(window);
                     ElicaseAvatarToolkitInspectorTitleTranslator.ApplyToAddComponentWindow(window.rootVisualElement);
                 }
             }
