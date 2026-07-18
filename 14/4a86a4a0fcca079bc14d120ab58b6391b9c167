@@ -1,0 +1,62 @@
+Assets/ElicaseAvatarToolkit/Langs/zh-cn/component-titles-20260718-164208-980.components.lang
+  h_8e6780fc7b4bb1 1-164
+Packages/packages-lock.json
+  s_9ce35393764c8f::t_6a80d057aed0ed 113
+Packages/tech.elicase.avatar-toolkit/Editor/AssemblyInfo.cs
+  s_9ce35393764c8f::t_ec3d467f617290 4
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentPickerWindow.cs
+  s_9ce35393764c8f::t_93e103a564098c 2,4-5,7,9,11,13-110,112-123,125-127,129-132,134-144,146,148-153,155-165,167-171,174,176-179,181,183-187,189-198,200-203,205-215,217-220,224,226,228-238,240-278
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentPickerWindow.cs.meta
+  s_9ce35393764c8f::t_1d10e86910854e 2
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentSwitchWindow.cs
+  s_69446eae7b93bc::t_e882bcaf9b1953 72-74,78,98,107,111,121-154
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentTranslationExporter.cs
+  s_9ce35393764c8f::t_cfa339bbbf1875 51,55,61,63,72-77
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitGameObjectInspectorEditor.cs
+  s_9ce35393764c8f::t_a156fe5caa57f7 22
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleSourcePatch.cs
+  s_9ce35393764c8f::t_e793404e0685f1 14,22
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleTranslator.cs
+  s_9ce35393764c8f::t_58a1ff4f63a684 13,16,18,21-25,30-31,34,36,47,51-67,101,103,108,110,116
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitTranslatedComponentEditor.cs
+  s_9ce35393764c8f::t_f7bc756bb7b215 3-4,8,10-11,15-18,30-31,34,39,44-143
+Packages/tech.elicase.avatar-toolkit/i18n/en-us.yml
+  s_69446eae7b93bc::t_9d344db7cf9d30 14-20
+Packages/tech.elicase.avatar-toolkit/i18n/ja-jp.yml
+  s_69446eae7b93bc::t_1cacc5663eb323 14-20
+Packages/tech.elicase.avatar-toolkit/i18n/zh-cn.yml
+  s_69446eae7b93bc::t_f6e4081434c9c0 14-20
+Packages/tech.elicase.avatar-toolkit/package.json
+  s_9ce35393764c8f::t_c65030a898327a 4,14,16
+docs/component-translation-ui-toolkit-plan.md
+  s_9ce35393764c8f::t_65b62eb88b4319 1-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "144a86a4a0fcca079bc14d120ab58b6391b9c167",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_69446eae7b93bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f74a3-880c-7a23-923a-7477a7f2dbbb",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    },
+    "s_9ce35393764c8f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7482-eac5-76b3-ba38-23afcee43a5b",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
