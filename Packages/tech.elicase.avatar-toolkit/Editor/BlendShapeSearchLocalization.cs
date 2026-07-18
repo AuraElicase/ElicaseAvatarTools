@@ -147,11 +147,29 @@ namespace BlendShapeSearch
 
         internal static string GetComponentDisplayName(string sourceName)
         {
+            return TryGetComponentDisplayName(sourceName, out var displayName) ? displayName : sourceName;
+        }
+
+        internal static bool TryGetComponentDisplayName(string sourceName, out string displayName)
+        {
             EnsureInitialized();
-            return componentTranslations.TryGetValue(sourceName, out var translatedName)
-                   && !string.IsNullOrEmpty(translatedName)
-                ? translatedName
-                : sourceName;
+            if (componentTranslations.TryGetValue(sourceName, out var translatedName)
+                && !string.IsNullOrEmpty(translatedName)
+                && translatedName != sourceName)
+            {
+                displayName = translatedName;
+                return true;
+            }
+
+            displayName = sourceName;
+            return false;
+        }
+
+        internal static void ReloadCurrentLanguage()
+        {
+            EnsureInitialized();
+            LoadLanguageResources();
+            LanguageChanged?.Invoke();
         }
 
         internal static Dictionary<string, string> MergeFirstWins(IEnumerable<IDictionary<string, string>> mappings)

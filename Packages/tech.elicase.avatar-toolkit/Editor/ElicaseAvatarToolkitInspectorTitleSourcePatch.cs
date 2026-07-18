@@ -18,6 +18,7 @@ namespace BlendShapeSearch
         {
             ElicaseEditorWindowExtensions.Register(inspectorExtension);
             EditorApplication.update += RefreshVisibleWindows;
+            EditorApplication.projectChanged += BlendShapeSearchLocalization.ReloadCurrentLanguage;
             BlendShapeSearchLocalization.LanguageChanged += RefreshNow;
             ElicaseAvatarToolkitComponentSettings.Changed += RefreshNow;
         }
@@ -47,7 +48,7 @@ namespace BlendShapeSearch
                 {
                     ElicaseAvatarToolkitInspectorTitleTranslator.ApplyToInspector(window.rootVisualElement);
                 }
-                else if (ElicaseAvatarToolkitGameObjectInspectorEditor.IsAddComponentWindow(window))
+                else
                 {
                     ElicaseAvatarToolkitInspectorTitleTranslator.ApplyToAddComponentWindow(window.rootVisualElement);
                 }

@@ -11,7 +11,7 @@ namespace BlendShapeSearch
 
         internal static void ApplyToInspector(VisualElement root)
         {
-            Apply(root, ElicaseAvatarToolkitGameObjectInspectorEditor.IsComponentHeaderTitle);
+            Apply(root, _ => true);
         }
 
         internal static void ApplyToAddComponentWindow(VisualElement root)
@@ -60,9 +60,13 @@ namespace BlendShapeSearch
                 tracked.RawText = element.text ?? string.Empty;
             }
 
-            var translated = BlendShapeSearchLocalization.GetComponentDisplayName(tracked.RawText);
-            if (translated == tracked.RawText && element.text == tracked.RawText)
+            if (!BlendShapeSearchLocalization.TryGetComponentDisplayName(tracked.RawText, out var translated))
             {
+                if (element.text == tracked.AppliedText)
+                {
+                    element.text = tracked.RawText;
+                }
+
                 trackedTitles.Remove(element);
                 return;
             }
