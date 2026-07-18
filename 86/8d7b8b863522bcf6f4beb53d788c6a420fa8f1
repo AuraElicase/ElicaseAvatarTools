@@ -1,0 +1,52 @@
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentSwitchWindow.cs
+  s_e507c46a5f6859::t_e17c739e7d2c29 26,34-38,46
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentTranslationExporter.cs
+  s_e507c46a5f6859::t_d435e6c05be8df 1-73
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentTranslationExporter.cs.meta
+  s_e507c46a5f6859::t_cd8e70843390ee 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitGameObjectInspectorEditor.cs
+  s_e507c46a5f6859::t_4e9854912deb9f 1-34
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitGameObjectInspectorEditor.cs.meta
+  s_e507c46a5f6859::t_c419e9577b69b5 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleSourcePatch.cs
+  s_e507c46a5f6859::t_60c931f351fcb4 1-57
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleSourcePatch.cs.meta
+  s_e507c46a5f6859::t_0935f964894b28 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleTranslator.cs
+  s_e507c46a5f6859::t_aeb2d53d15aaed 1-86
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleTranslator.cs.meta
+  s_e507c46a5f6859::t_13de4f0d6b85ff 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitTranslatedComponentEditor.cs
+  s_e507c46a5f6859::t_d8581b2d1728a2 1-38
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitTranslatedComponentEditor.cs.meta
+  s_e507c46a5f6859::t_accba46590e64d 1-11
+Packages/tech.elicase.avatar-toolkit/Tests/Editor/BlendShapeSearchLocalizationTests.cs
+  s_e507c46a5f6859::t_23ecaf113c8f2d 3,5,36-75
+Packages/tech.elicase.avatar-toolkit/i18n/en-us.yml
+  s_e507c46a5f6859::t_a9ebfca5cbce1d 17-18,21-23
+Packages/tech.elicase.avatar-toolkit/i18n/ja-jp.yml
+  s_e507c46a5f6859::t_1709ca80619427 17-18,21-23
+Packages/tech.elicase.avatar-toolkit/i18n/zh-cn.yml
+  s_e507c46a5f6859::t_b71bc447d28098 17-18,21-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "868d7b8b863522bcf6f4beb53d788c6a420fa8f1",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_e507c46a5f6859": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7338-20be-7e62-a543-a8269d915adc",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
