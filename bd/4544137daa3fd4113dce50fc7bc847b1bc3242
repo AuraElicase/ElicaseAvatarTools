@@ -1,0 +1,42 @@
+Packages/tech.elicase.avatar-toolkit/Editor/BlendShapeSearch.Editor.asmdef
+  s_e507c46a5f6859::t_8ac60185144e47 4-6
+Packages/tech.elicase.avatar-toolkit/Editor/BlendShapeSearchLocalization.cs
+  s_e507c46a5f6859::t_0d63031547a7c5 42,45,83-85,87,148-156,215-221,223,226,229
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentSwitchWindow.cs
+  s_e507c46a5f6859::t_c27edcb20c07bb 5,91,98,102,106,108-109,112,114
+Packages/tech.elicase.avatar-toolkit/Editor/SkinnedMeshRendererBlendShapeSearchEditor.cs
+  s_e507c46a5f6859::t_15fe6eebc2fa39 10,35,135,145-146,150,162-163,169,175-177,179-181,186,188-192,261,360
+Packages/tech.elicase.avatar-toolkit/Tests.meta
+  s_e507c46a5f6859::t_cf843a091a40fa 1-8
+Packages/tech.elicase.avatar-toolkit/Tests/Editor.meta
+  s_e507c46a5f6859::t_6a8719fe0069d7 1-8
+Packages/tech.elicase.avatar-toolkit/Tests/Editor/BlendShapeSearch.EditorTests.asmdef
+  s_e507c46a5f6859::t_66835dbd26ea81 1-15
+Packages/tech.elicase.avatar-toolkit/Tests/Editor/BlendShapeSearch.EditorTests.asmdef.meta
+  s_e507c46a5f6859::t_eaa2aaa0dffd73 1-7
+Packages/tech.elicase.avatar-toolkit/Tests/Editor/BlendShapeSearchLocalizationTests.cs
+  s_e507c46a5f6859::t_c1f01acbf12203 1-35
+Packages/tech.elicase.avatar-toolkit/Tests/Editor/BlendShapeSearchLocalizationTests.cs.meta
+  s_e507c46a5f6859::t_884fb6085085e5 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bd4544137daa3fd4113dce50fc7bc847b1bc3242",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_e507c46a5f6859": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7338-20be-7e62-a543-a8269d915adc",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
