@@ -109,6 +109,14 @@
       "version": "file:tech.elicase.avatar-toolkit",
       "depth": 0,
       "source": "embedded",
+      "dependencies": {
+        "tech.elicase.elicase-ui-theme-for-unity": "0.1.0"
+      }
+    },
+    "tech.elicase.elicase-ui-theme-for-unity": {
+      "version": "file:C:/01-Projects/@VRChat/ElicaseUIThemeForUnity/Packages/tech.elicase.elicase-ui-theme-for-unity",
+      "depth": 0,
+      "source": "local",
       "dependencies": {}
     },
     "com.unity.modules.ai": {
