@@ -178,18 +178,8 @@ namespace BlendShapeSearch
             toolbar.Add(exportButton);
             toolbar.Add(new ElicaseButton(ImportBlendShapeWeights, Text("ui.import")));
             toolbar.Add(new ElicaseButton(ExportBlendShapeText, Text("ui.exportBlendShapeText")));
-            toolbar.Add(CreateLanguageSelect());
             UpdateExportButton();
             return toolbar;
-        }
-
-        private ElicaseSelectField CreateLanguageSelect()
-        {
-            var languages = new List<string>(BlendShapeSearchLocalization.GetLanguages());
-            var selectedIndex = languages.IndexOf(BlendShapeSearchLocalization.CurrentLanguage);
-            var select = new ElicaseSelectField(languages, selectedIndex, Text("ui.language"));
-            select.RegisterValueChangedCallback(change => BlendShapeSearchLocalization.SetLanguage(change.newValue));
-            return select;
         }
 
         private void TrackBlendShapeDependencies(VisualElement container)

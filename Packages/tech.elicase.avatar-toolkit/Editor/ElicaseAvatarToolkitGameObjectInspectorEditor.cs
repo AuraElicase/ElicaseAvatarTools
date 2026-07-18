@@ -19,7 +19,7 @@ namespace BlendShapeSearch
 
         internal static bool IsComponentHeaderTitle(TextElement element)
         {
-            for (var current = element.parent; current != null; current = current.parent)
+            for (VisualElement current = element; current != null; current = current.parent)
             {
                 if (current.ClassListContains("unity-inspector-element__header")
                     || current.ClassListContains("unity-inspector-element__header-title"))

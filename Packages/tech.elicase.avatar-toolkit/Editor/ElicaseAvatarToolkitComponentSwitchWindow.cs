@@ -69,11 +69,13 @@ namespace BlendShapeSearch
 
     public sealed class ElicaseAvatarToolkitComponentSwitchWindow : EditorWindow
     {
-        [MenuItem("Tools/ElicaseAvatarToolkit/组件开关")]
+        private const string FollowUnityLanguageValue = "__follow-unity__";
+
+        [MenuItem("Tools/ElicaseAvatarToolkit/设置")]
         public static void Open()
         {
             var window = GetWindow<ElicaseAvatarToolkitComponentSwitchWindow>();
-            window.titleContent = new UnityEngine.GUIContent(Text("window.componentSwitch"));
+            window.titleContent = new UnityEngine.GUIContent(Text("window.settings"));
             window.minSize = new UnityEngine.Vector2(300f, 120f);
             window.Show();
         }
@@ -93,7 +95,7 @@ namespace BlendShapeSearch
 
         private void Rebuild()
         {
-            titleContent = new UnityEngine.GUIContent(Text("window.componentSwitch"));
+            titleContent = new UnityEngine.GUIContent(Text("window.settings"));
             ElicaseThemeManager.Apply(rootVisualElement);
             rootVisualElement.Clear();
             rootVisualElement.style.paddingLeft = 10f;
@@ -102,10 +104,11 @@ namespace BlendShapeSearch
             rootVisualElement.style.paddingBottom = 8f;
 
             var panel = new ElicasePanel();
-            var title = new Label(Text("window.componentSwitch"));
+            var title = new Label(Text("window.settings"));
             title.style.unityFontStyleAndWeight = UnityEngine.FontStyle.Bold;
             title.style.marginBottom = 6f;
             panel.Add(title);
+            panel.Add(CreateLanguageSelect());
 
             foreach (var component in ElicaseAvatarToolkitComponentSettings.Components)
             {
@@ -113,6 +116,40 @@ namespace BlendShapeSearch
             }
 
             rootVisualElement.Add(panel);
+        }
+
+        private static ElicaseSelectField CreateLanguageSelect()
+        {
+            var languages = new List<string> { FollowUnityLanguageValue };
+            languages.AddRange(BlendShapeSearchLocalization.GetLanguages());
+            var languageOverride = BlendShapeSearchLocalization.LanguageOverride;
+            var selectedIndex = string.IsNullOrEmpty(languageOverride)
+                ? 0
+                : languages.IndexOf(languageOverride);
+            if (selectedIndex < 0)
+            {
+                selectedIndex = 0;
+            }
+
+            var select = new ElicaseSelectField(languages, selectedIndex, Text("ui.language"));
+            select.formatSelectedValueCallback = FormatLanguageOption;
+            select.formatListItemCallback = FormatLanguageOption;
+            select.RegisterValueChangedCallback(change =>
+            {
+                if (change.newValue == FollowUnityLanguageValue)
+                {
+                    BlendShapeSearchLocalization.FollowUnityLanguage();
+                    return;
+                }
+
+                BlendShapeSearchLocalization.SetLanguageOverride(change.newValue);
+            });
+            return select;
+        }
+
+        private static string FormatLanguageOption(string language)
+        {
+            return language == FollowUnityLanguageValue ? Text("ui.followUnityLanguage") : language;
         }
 
         private static ElicaseToggle CreateComponentToggle(ElicaseAvatarToolkitComponentDefinition component)

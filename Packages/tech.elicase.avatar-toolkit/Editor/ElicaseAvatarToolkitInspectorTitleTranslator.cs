@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace BlendShapeSearch
@@ -12,58 +8,33 @@ namespace BlendShapeSearch
     {
         private static readonly Dictionary<TextElement, TrackedTitle> trackedTitles =
             new Dictionary<TextElement, TrackedTitle>();
-        private static readonly Dictionary<object, TrackedDropdownTitle> trackedDropdownTitles =
-            new Dictionary<object, TrackedDropdownTitle>();
-
-        private static readonly Type AdvancedDropdownWindowType =
-            Type.GetType("UnityEditor.IMGUI.Controls.AdvancedDropdownWindow, UnityEditor");
-
-        private static readonly FieldInfo AdvancedDropdownTreeField = FindField(
-            AdvancedDropdownWindowType,
-            "m_CurrentlyRenderedTree");
-
         internal static void ApplyToInspector(VisualElement root)
         {
-            Apply(root, _ => true);
+            Apply(root, ElicaseAvatarToolkitGameObjectInspectorEditor.IsComponentHeaderTitle);
         }
 
-        internal static void ApplyToAddComponentWindow(VisualElement root)
+        internal static void Restore(VisualElement root)
         {
-            Apply(root, _ => true);
-        }
-
-        internal static void ApplyToAddComponentDropdown(EditorWindow window)
-        {
-            if (window == null || AdvancedDropdownWindowType == null || AdvancedDropdownTreeField == null
-                || !AdvancedDropdownWindowType.IsInstanceOfType(window))
-            {
-                return;
-            }
-
-            var tree = AdvancedDropdownTreeField.GetValue(window);
-            if (tree != null && ApplyToDropdownTree(tree))
-            {
-                window.Repaint();
-            }
-        }
-
-        internal static void RestoreAll()
-        {
+            var titlesToRemove = new List<TextElement>();
             foreach (var pair in trackedTitles)
             {
+                if (!IsDescendantOf(pair.Key, root))
+                {
+                    continue;
+                }
+
                 if (pair.Key.panel != null && pair.Key.text == pair.Value.AppliedText)
                 {
                     pair.Key.text = pair.Value.RawText;
                 }
+
+                titlesToRemove.Add(pair.Key);
             }
 
-            trackedTitles.Clear();
-            foreach (var pair in trackedDropdownTitles)
+            foreach (var title in titlesToRemove)
             {
-                pair.Value.Restore(pair.Key);
+                trackedTitles.Remove(title);
             }
-
-            trackedDropdownTitles.Clear();
         }
 
         private static void Apply(VisualElement root, Func<TextElement, bool> isCandidate)
@@ -73,7 +44,25 @@ namespace BlendShapeSearch
                 return;
             }
 
+            RemoveDetachedTitles();
             root.Query<TextElement>().ForEach(element => ApplyElement(element, isCandidate));
+        }
+
+        private static void RemoveDetachedTitles()
+        {
+            var titlesToRemove = new List<TextElement>();
+            foreach (var pair in trackedTitles)
+            {
+                if (pair.Key.panel == null)
+                {
+                    titlesToRemove.Add(pair.Key);
+                }
+            }
+
+            foreach (var title in titlesToRemove)
+            {
+                trackedTitles.Remove(title);
+            }
         }
 
         private static void ApplyElement(TextElement element, Func<TextElement, bool> isCandidate)
@@ -109,77 +98,22 @@ namespace BlendShapeSearch
             tracked.AppliedText = translated;
         }
 
-        private static bool ApplyToDropdownTree(object item)
+        private static bool IsDescendantOf(VisualElement element, VisualElement root)
         {
-            var changed = ApplyToDropdownItem(item);
-            var childrenField = FindField(item.GetType(), "m_Children");
-            if (!(childrenField?.GetValue(item) is IEnumerable children))
-            {
-                return changed;
-            }
-
-            foreach (var child in children)
-            {
-                changed |= ApplyToDropdownTree(child);
-            }
-
-            return changed;
-        }
-
-        private static bool ApplyToDropdownItem(object item)
-        {
-            if (item.GetType().FullName != "UnityEditor.AddComponent.ComponentDropdownItem")
+            if (element == null || root == null)
             {
                 return false;
             }
 
-            var rawName = FindField(item.GetType(), "m_SearchableName")?.GetValue(item) as string;
-            var localizedNameField = FindField(item.GetType(), "m_LocalizedName");
-            var content = FindField(item.GetType(), "m_Content")?.GetValue(item) as GUIContent;
-            if (string.IsNullOrEmpty(rawName) || localizedNameField == null || content == null)
+            for (var current = element; current != null; current = current.parent)
             {
-                return false;
-            }
-
-            if (!BlendShapeSearchLocalization.TryGetComponentDisplayName(rawName, out var translated))
-            {
-                if (trackedDropdownTitles.TryGetValue(item, out var tracked))
+                if (current == root)
                 {
-                    tracked.Restore(item);
-                    trackedDropdownTitles.Remove(item);
                     return true;
                 }
-
-                return false;
             }
 
-            if (!trackedDropdownTitles.TryGetValue(item, out var title))
-            {
-                title = new TrackedDropdownTitle(
-                    localizedNameField,
-                    localizedNameField.GetValue(item) as string,
-                    content,
-                    content.text);
-                trackedDropdownTitles.Add(item, title);
-            }
-
-            localizedNameField.SetValue(item, translated);
-            content.text = translated;
-            return true;
-        }
-
-        private static FieldInfo FindField(Type type, string name)
-        {
-            for (var current = type; current != null; current = current.BaseType)
-            {
-                var field = current.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                if (field != null)
-                {
-                    return field;
-                }
-            }
-
-            return null;
+            return false;
         }
 
         private sealed class TrackedTitle
@@ -194,30 +128,5 @@ namespace BlendShapeSearch
             internal string AppliedText { get; set; }
         }
 
-        private sealed class TrackedDropdownTitle
-        {
-            private readonly FieldInfo localizedNameField;
-            private readonly string originalLocalizedName;
-            private readonly GUIContent content;
-            private readonly string originalContentText;
-
-            internal TrackedDropdownTitle(
-                FieldInfo localizedNameField,
-                string originalLocalizedName,
-                GUIContent content,
-                string originalContentText)
-            {
-                this.localizedNameField = localizedNameField;
-                this.originalLocalizedName = originalLocalizedName;
-                this.content = content;
-                this.originalContentText = originalContentText;
-            }
-
-            internal void Restore(object item)
-            {
-                localizedNameField.SetValue(item, originalLocalizedName);
-                content.text = originalContentText;
-            }
-        }
     }
 }

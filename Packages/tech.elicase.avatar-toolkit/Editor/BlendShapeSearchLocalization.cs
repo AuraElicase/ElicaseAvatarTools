@@ -78,7 +78,8 @@ namespace BlendShapeSearch
 
     internal static class BlendShapeSearchLocalization
     {
-        private const string LanguagePreferenceKey = "ElicaseAvatarToolkit.BlendShapeSearch.Language";
+        private const string LanguageOverridePreferenceKey = "ElicaseAvatarToolkit.Language.Override";
+        private const string LegacyLanguagePreferenceKey = "ElicaseAvatarToolkit.BlendShapeSearch.Language";
         private static Dictionary<string, string> uiTexts = new Dictionary<string, string>(StringComparer.Ordinal);
         internal const string BlendShapeTranslationSearchPattern = "*.blendshapes.lang";
         internal const string ComponentTranslationSearchPattern = "*.components.lang";
@@ -95,6 +96,15 @@ namespace BlendShapeSearch
             {
                 EnsureInitialized();
                 return currentLanguage;
+            }
+        }
+
+        internal static string LanguageOverride
+        {
+            get
+            {
+                EnsureInitialized();
+                return EditorPrefs.GetString(LanguageOverridePreferenceKey, string.Empty);
             }
         }
 
@@ -117,15 +127,36 @@ namespace BlendShapeSearch
             return languages;
         }
 
-        internal static void SetLanguage(string language)
+        internal static bool SetLanguageOverride(string language)
         {
             if (!GetLanguages().Contains(language, StringComparer.Ordinal))
+            {
+                return false;
+            }
+
+            if (LanguageOverride == language)
+            {
+                return true;
+            }
+
+            EditorPrefs.SetString(LanguageOverridePreferenceKey, language);
+            currentLanguage = language;
+            LoadLanguageResources();
+            LanguageChanged?.Invoke();
+            return true;
+        }
+
+        internal static void FollowUnityLanguage()
+        {
+            EnsureInitialized();
+            var defaultLanguage = GetDefaultLanguage(GetLanguages());
+            if (!EditorPrefs.HasKey(LanguageOverridePreferenceKey) && currentLanguage == defaultLanguage)
             {
                 return;
             }
 
-            currentLanguage = language;
-            EditorPrefs.SetString(LanguagePreferenceKey, language);
+            EditorPrefs.DeleteKey(LanguageOverridePreferenceKey);
+            currentLanguage = defaultLanguage;
             LoadLanguageResources();
             LanguageChanged?.Invoke();
         }
@@ -191,15 +222,16 @@ namespace BlendShapeSearch
 
         private static void EnsureInitialized()
         {
+            EditorPrefs.DeleteKey(LegacyLanguagePreferenceKey);
             if (!string.IsNullOrEmpty(currentLanguage))
             {
                 return;
             }
 
             var languages = GetLanguages();
-            var savedLanguage = EditorPrefs.GetString(LanguagePreferenceKey, string.Empty);
-            currentLanguage = languages.Contains(savedLanguage, StringComparer.Ordinal)
-                ? savedLanguage
+            var languageOverride = EditorPrefs.GetString(LanguageOverridePreferenceKey, string.Empty);
+            currentLanguage = languages.Contains(languageOverride, StringComparer.Ordinal)
+                ? languageOverride
                 : GetDefaultLanguage(languages);
             LoadLanguageResources();
         }

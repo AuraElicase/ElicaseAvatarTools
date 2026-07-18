@@ -110,7 +110,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "tech.elicase.elicase-ui-theme-for-unity": "0.1.0"
+        "tech.elicase.elicase-ui-theme-for-unity": "0.2.0"
       }
     },
     "tech.elicase.elicase-ui-theme-for-unity": {

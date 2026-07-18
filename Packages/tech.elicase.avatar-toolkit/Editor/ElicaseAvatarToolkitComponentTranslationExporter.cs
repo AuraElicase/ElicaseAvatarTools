@@ -48,19 +48,19 @@ namespace BlendShapeSearch
                 .ToArray();
         }
 
-        private static bool IsSupportedComponentType(Type type)
+        internal static bool IsSupportedComponentType(Type type)
         {
             return type != null
                    && typeof(Component).IsAssignableFrom(type)
+                   && !typeof(Transform).IsAssignableFrom(type)
                    && !type.IsAbstract
                    && !type.ContainsGenericParameters
                    && (type.IsPublic || type.IsNestedPublic);
         }
 
-        private static string GetTitle(Type type)
+        internal static string GetTitle(Type type)
         {
-            var menu = Attribute.GetCustomAttribute(type, typeof(AddComponentMenu), true) as AddComponentMenu;
-            var menuPath = menu != null ? menu.componentMenu : string.Empty;
+            var menuPath = GetMenuPath(type);
             if (!string.IsNullOrWhiteSpace(menuPath))
             {
                 var separator = menuPath.LastIndexOf('/');
@@ -68,6 +68,12 @@ namespace BlendShapeSearch
             }
 
             return ObjectNames.NicifyVariableName(type.Name);
+        }
+
+        internal static string GetMenuPath(Type type)
+        {
+            var menu = Attribute.GetCustomAttribute(type, typeof(AddComponentMenu), true) as AddComponentMenu;
+            return menu != null ? menu.componentMenu : string.Empty;
         }
     }
 }
