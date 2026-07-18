@@ -1,0 +1,15 @@
+{
+  "name": "BlendShapeSearch.EditorTests",
+  "rootNamespace": "BlendShapeSearch.Tests",
+  "references": [
+    "BlendShapeSearch.Editor",
+    "UnityEditor.TestRunner",
+    "UnityEngine.TestRunner"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

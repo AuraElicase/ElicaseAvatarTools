@@ -39,10 +39,10 @@ namespace BlendShapeSearch
             }
         }
 
-        internal static string CreateOutputPath(string filenamePrefix)
+        internal static string CreateOutputPath(string filenamePrefix, string extension = ".yml")
         {
             EnsureAssetFolders();
-            return Path.Combine(OutputsAbsolutePath, filenamePrefix + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + ".yml");
+            return Path.Combine(OutputsAbsolutePath, filenamePrefix + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + extension);
         }
 
         internal static void RevealAsset(string absolutePath)
@@ -80,7 +80,11 @@ namespace BlendShapeSearch
     {
         private const string LanguagePreferenceKey = "ElicaseAvatarToolkit.BlendShapeSearch.Language";
         private static Dictionary<string, string> uiTexts = new Dictionary<string, string>(StringComparer.Ordinal);
+        internal const string BlendShapeTranslationSearchPattern = "*.blendshapes.lang";
+        internal const string ComponentTranslationSearchPattern = "*.components.lang";
+
         private static Dictionary<string, string> blendShapeTranslations = new Dictionary<string, string>(StringComparer.Ordinal);
+        private static Dictionary<string, string> componentTranslations = new Dictionary<string, string>(StringComparer.Ordinal);
         private static string currentLanguage;
 
         internal static event Action LanguageChanged;
@@ -136,6 +140,15 @@ namespace BlendShapeSearch
         {
             EnsureInitialized();
             return blendShapeTranslations.TryGetValue(sourceName, out var translatedName)
+                   && !string.IsNullOrEmpty(translatedName)
+                ? translatedName
+                : sourceName;
+        }
+
+        internal static string GetComponentDisplayName(string sourceName)
+        {
+            EnsureInitialized();
+            return componentTranslations.TryGetValue(sourceName, out var translatedName)
                    && !string.IsNullOrEmpty(translatedName)
                 ? translatedName
                 : sourceName;
@@ -199,16 +212,21 @@ namespace BlendShapeSearch
 
             BlendShapeSearchPaths.EnsureLanguageFolder(currentLanguage);
             var translationDirectory = Path.Combine(BlendShapeSearchPaths.LanguagesAbsolutePath, currentLanguage);
-            if (!Directory.Exists(translationDirectory))
+            blendShapeTranslations = LoadTranslationMappings(translationDirectory, BlendShapeTranslationSearchPattern);
+            componentTranslations = LoadTranslationMappings(translationDirectory, ComponentTranslationSearchPattern);
+        }
+
+        internal static Dictionary<string, string> LoadTranslationMappings(string directory, string searchPattern)
+        {
+            if (!Directory.Exists(directory))
             {
-                blendShapeTranslations = new Dictionary<string, string>(StringComparer.Ordinal);
-                return;
+                return new Dictionary<string, string>(StringComparer.Ordinal);
             }
 
-            var mappings = Directory.GetFiles(translationDirectory, "*.yml")
+            var mappings = Directory.GetFiles(directory, searchPattern)
                 .OrderBy(path => path, StringComparer.Ordinal)
                 .Select(ReadYamlFile);
-            blendShapeTranslations = MergeFirstWins(mappings);
+            return MergeFirstWins(mappings);
         }
 
         private static Dictionary<string, string> ReadYamlFile(string path)

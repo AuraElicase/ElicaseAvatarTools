@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.UIElements;
+using Tech.Elicase.UITheme.Editor;
 
 namespace BlendShapeSearch
 {
@@ -87,26 +88,30 @@ namespace BlendShapeSearch
         private void Rebuild()
         {
             titleContent = new UnityEngine.GUIContent(Text("window.componentSwitch"));
+            ElicaseThemeManager.Apply(rootVisualElement);
             rootVisualElement.Clear();
             rootVisualElement.style.paddingLeft = 10f;
             rootVisualElement.style.paddingRight = 10f;
             rootVisualElement.style.paddingTop = 8f;
             rootVisualElement.style.paddingBottom = 8f;
 
+            var panel = new ElicasePanel();
             var title = new Label(Text("window.componentSwitch"));
             title.style.unityFontStyleAndWeight = UnityEngine.FontStyle.Bold;
             title.style.marginBottom = 6f;
-            rootVisualElement.Add(title);
+            panel.Add(title);
 
             foreach (var component in ElicaseAvatarToolkitComponentSettings.Components)
             {
-                rootVisualElement.Add(CreateComponentToggle(component));
+                panel.Add(CreateComponentToggle(component));
             }
+
+            rootVisualElement.Add(panel);
         }
 
-        private static Toggle CreateComponentToggle(ElicaseAvatarToolkitComponentDefinition component)
+        private static ElicaseToggle CreateComponentToggle(ElicaseAvatarToolkitComponentDefinition component)
         {
-            var toggle = new Toggle(Text(component.LabelKey))
+            var toggle = new ElicaseToggle(Text(component.LabelKey))
             {
                 tooltip = Text(component.TooltipKey),
                 value = ElicaseAvatarToolkitComponentSettings.IsEnabled(component.Id)

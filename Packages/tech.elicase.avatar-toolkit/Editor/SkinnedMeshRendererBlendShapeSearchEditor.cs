@@ -7,6 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Tech.Elicase.UITheme.Editor;
 
 namespace BlendShapeSearch
 {
@@ -31,6 +32,7 @@ namespace BlendShapeSearch
         public override VisualElement CreateInspectorGUI()
         {
             root = new VisualElement();
+            ElicaseThemeManager.Apply(root);
             BuildInspector();
             root.RegisterCallback<AttachToPanelEvent>(_ =>
             {
@@ -130,6 +132,7 @@ namespace BlendShapeSearch
 
         private void AddBlendShapeSection(VisualElement container)
         {
+            var panel = new ElicasePanel();
             var section = new Foldout
             {
                 text = Text("ui.blendShapes"),
@@ -139,11 +142,12 @@ namespace BlendShapeSearch
             if (targets.Length != 1)
             {
                 section.Add(new HelpBox(Text("ui.singleSelectionOnly"), HelpBoxMessageType.Info));
-                container.Add(section);
+                panel.Add(section);
+                container.Add(panel);
                 return;
             }
 
-            var searchField = new ToolbarSearchField { tooltip = Text("ui.filterTooltip") };
+            var searchField = new ElicaseTextField { tooltip = Text("ui.filterTooltip") };
             searchField.SetValueWithoutNotify(searchText);
             searchField.RegisterValueChangedCallback(change =>
             {
@@ -155,43 +159,37 @@ namespace BlendShapeSearch
             section.Add(searchField);
             section.Add(CreateToolbar());
             section.Add(blendShapeList);
-            container.Add(section);
+            panel.Add(section);
+            container.Add(panel);
             RefreshBlendShapeList();
         }
 
         private VisualElement CreateToolbar()
         {
-            var toolbar = new VisualElement();
+            var toolbar = new ElicaseToolbar();
             toolbar.style.flexDirection = FlexDirection.Row;
             toolbar.style.flexWrap = Wrap.Wrap;
             toolbar.style.marginTop = 2f;
             toolbar.style.marginBottom = 2f;
 
-            toolbar.Add(new Button(SelectAllBlendShapes) { text = Text("ui.selectAll") });
-            toolbar.Add(new Button(ClearBlendShapeSelection) { text = Text("ui.clear") });
-            exportButton = new Button(ExportSelectedBlendShapes) { text = Text("ui.exportSelected") };
+            toolbar.Add(new ElicaseButton(SelectAllBlendShapes, Text("ui.selectAll")));
+            toolbar.Add(new ElicaseButton(ClearBlendShapeSelection, Text("ui.clear")));
+            exportButton = new ElicaseButton(ExportSelectedBlendShapes, Text("ui.exportSelected"));
             toolbar.Add(exportButton);
-            toolbar.Add(new Button(ImportBlendShapeWeights) { text = Text("ui.import") });
-            toolbar.Add(new Button(ExportBlendShapeText) { text = Text("ui.exportBlendShapeText") });
-            toolbar.Add(CreateLanguageMenu());
+            toolbar.Add(new ElicaseButton(ImportBlendShapeWeights, Text("ui.import")));
+            toolbar.Add(new ElicaseButton(ExportBlendShapeText, Text("ui.exportBlendShapeText")));
+            toolbar.Add(CreateLanguageSelect());
             UpdateExportButton();
             return toolbar;
         }
 
-        private ToolbarMenu CreateLanguageMenu()
+        private ElicaseSelectField CreateLanguageSelect()
         {
-            var menu = new ToolbarMenu { text = Text("ui.language") + ": " + BlendShapeSearchLocalization.CurrentLanguage };
-            foreach (var language in BlendShapeSearchLocalization.GetLanguages())
-            {
-                var languageCode = language;
-                menu.menu.AppendAction(languageCode,
-                    _ => BlendShapeSearchLocalization.SetLanguage(languageCode),
-                    _ => languageCode == BlendShapeSearchLocalization.CurrentLanguage
-                        ? DropdownMenuAction.Status.Checked
-                        : DropdownMenuAction.Status.Normal);
-            }
-
-            return menu;
+            var languages = new List<string>(BlendShapeSearchLocalization.GetLanguages());
+            var selectedIndex = languages.IndexOf(BlendShapeSearchLocalization.CurrentLanguage);
+            var select = new ElicaseSelectField(languages, selectedIndex, Text("ui.language"));
+            select.RegisterValueChangedCallback(change => BlendShapeSearchLocalization.SetLanguage(change.newValue));
+            return select;
         }
 
         private void TrackBlendShapeDependencies(VisualElement container)
@@ -260,7 +258,7 @@ namespace BlendShapeSearch
             var row = new VisualElement();
             row.style.flexDirection = FlexDirection.Row;
 
-            var selectionToggle = new Toggle { tooltip = Text("ui.selectionTooltip") };
+            var selectionToggle = new ElicaseToggle { tooltip = Text("ui.selectionTooltip") };
             selectionToggle.SetValueWithoutNotify(selectedBlendShapeIndices.Contains(index));
             selectionToggle.RegisterValueChangedCallback(change =>
             {
@@ -359,7 +357,7 @@ namespace BlendShapeSearch
             var names = Enumerable.Range(0, mesh.blendShapeCount)
                 .Select(index => mesh.GetBlendShapeName(index))
                 .Select(name => new KeyValuePair<string, string>(name, name));
-            ExportYaml(BlendShapeSearchPaths.CreateOutputPath(mesh.name + "-blend-shape-text"), FlatYaml.SerializeStrings(names),
+            ExportYaml(BlendShapeSearchPaths.CreateOutputPath(mesh.name + "-blend-shape-text", ".blendshapes.lang"), FlatYaml.SerializeStrings(names),
                 Text("dialog.exportTextFailed"));
         }
 

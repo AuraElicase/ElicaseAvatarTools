@@ -1,6 +1,9 @@
 {
   "name": "BlendShapeSearch.Editor",
   "rootNamespace": "BlendShapeSearch",
+  "references": [
+    "Tech.Elicase.UITheme.Editor"
+  ],
   "includePlatforms": [
     "Editor"
   ]
