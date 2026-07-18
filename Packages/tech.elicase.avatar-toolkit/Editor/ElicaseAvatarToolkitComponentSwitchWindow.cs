@@ -23,6 +23,7 @@ namespace BlendShapeSearch
     internal static class ElicaseAvatarToolkitComponentSettings
     {
         internal const string BlendShapeSearchComponentId = "blend-shape-search";
+        internal const string ComponentTranslationComponentId = "component-translation";
         private const string PreferencePrefix = "ElicaseAvatarToolkit.Components.";
 
         private static readonly ElicaseAvatarToolkitComponentDefinition[] componentDefinitions =
@@ -30,7 +31,11 @@ namespace BlendShapeSearch
             new ElicaseAvatarToolkitComponentDefinition(
                 BlendShapeSearchComponentId,
                 "component.blendShapeSearch",
-                "component.blendShapeSearchTooltip")
+                "component.blendShapeSearchTooltip"),
+            new ElicaseAvatarToolkitComponentDefinition(
+                ComponentTranslationComponentId,
+                "component.translation",
+                "component.translationTooltip")
         };
 
         internal static event Action Changed;
@@ -38,6 +43,7 @@ namespace BlendShapeSearch
         internal static IReadOnlyList<ElicaseAvatarToolkitComponentDefinition> Components => componentDefinitions;
 
         internal static bool IsBlendShapeSearchEnabled => IsEnabled(BlendShapeSearchComponentId);
+        internal static bool IsComponentTranslationEnabled => IsEnabled(ComponentTranslationComponentId);
 
         internal static bool IsEnabled(string componentId)
         {
