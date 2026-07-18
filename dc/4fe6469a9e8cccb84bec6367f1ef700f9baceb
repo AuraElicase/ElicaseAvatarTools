@@ -1,0 +1,26 @@
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleSourcePatch.cs
+  s_e507c46a5f6859::t_d9ac783d122879 53
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleTranslator.cs
+  s_e507c46a5f6859::t_1c9166c4bd084f 2,4-6,15-23,35-49,61-66,112-184,196-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "dc4fe6469a9e8cccb84bec6367f1ef700f9baceb",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_e507c46a5f6859": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7338-20be-7e62-a543-a8269d915adc",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
