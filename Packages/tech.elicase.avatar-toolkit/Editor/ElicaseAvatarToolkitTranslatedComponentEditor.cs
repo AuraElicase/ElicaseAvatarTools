@@ -27,7 +27,6 @@ namespace BlendShapeSearch
 
         public void OnDetach(ElicaseEditorWindowContext context)
         {
-            ElicaseAvatarToolkitInspectorTitleTranslator.Restore(context.RootVisualElement);
             RestoreAddComponentButton(context.RootVisualElement);
         }
 
@@ -40,12 +39,10 @@ namespace BlendShapeSearch
         {
             if (ElicaseAvatarToolkitComponentSettings.IsComponentTranslationEnabled)
             {
-                ElicaseAvatarToolkitInspectorTitleTranslator.ApplyToInspector(context.RootVisualElement);
                 ReplaceAddComponentButton(context.RootVisualElement);
                 return;
             }
 
-            ElicaseAvatarToolkitInspectorTitleTranslator.Restore(context.RootVisualElement);
             RestoreAddComponentButton(context.RootVisualElement);
         }
 

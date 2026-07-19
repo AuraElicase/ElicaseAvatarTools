@@ -1,0 +1,13 @@
+{
+  "name": "BlendShapeSearch.ComponentTranslation.Tests",
+  "rootNamespace": "BlendShapeSearch.Tests",
+  "references": [
+    "BlendShapeSearch.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
