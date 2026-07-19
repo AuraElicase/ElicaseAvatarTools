@@ -1,0 +1,58 @@
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentTitleProvider.cs
+  s_a6d2c70268ab81::t_904654d4cf52de 1-31
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleTranslator.cs
+  s_a6d2c70268ab81::t_0dd92a00729375 2,4-6,12-20,22-24,26,28-29,31-34,36,39,41,45-52,54,56,59,62,64,66,69-71,73,75-81,84,86,88,91-94,96-97,99-101,103-116,119,121,123-125,128,131,134,136,138-142,145-150,152,155-158,161,163-175,177-182,185-209
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitComponentTitleProvider.cs.meta
+  s_a6d2c70268ab81::t_6177491cef1529 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ElicaseAvatarToolkitInspectorTitleSourcePatch.cs
+  s_a6d2c70268ab81::t_d6274fc72d5e58 3,10-11,14-16,21,23,30-31,34-61
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/BlendShapeSearch.ComponentTranslation.Tests.asmdef
+  s_ff5ae5afb544bc::t_0752aa5d3987b9 1-13
+Packages/packages-lock.json
+  s_a6d2c70268ab81::t_dc8532cda6e2e3 113
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests.meta
+  s_ff5ae5afb544bc::t_767d204979f27c 1-8
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/BlendShapeSearchLocalizationEditorTests.cs
+  s_ff5ae5afb544bc::t_5ee5a002b3aaf7 1-51
+Assets/ElicaseAvatarToolkit/Langs/zh-cn/component-titles-20260718-164208-980.components.lang
+  h_8e6780fc7b4bb1 4,156
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/BlendShapeSearchLocalizationEditorTests.cs.meta
+  s_ff5ae5afb544bc::t_f78d1a1bf81a37 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/ComponentTranslationEditorTests.cs.meta
+  s_ff5ae5afb544bc::t_72265b47528f70 1-11
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/ComponentTranslationEditorTests.cs
+  s_a6d2c70268ab81::t_b02926995d0b34 1-122
+Packages/tech.elicase.avatar-toolkit/package.json
+  s_a6d2c70268ab81::t_0a2937b787e67e 14
+Packages/tech.elicase.avatar-toolkit/Editor/ComponentTranslationTests/BlendShapeSearch.ComponentTranslation.Tests.asmdef.meta
+  s_ff5ae5afb544bc::t_5b0cfd9fd26579 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "491125fd902691b4ef0933af73662b890b1dd834",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_a6d2c70268ab81": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7508-dea5-7ea1-94a0-9ffa8b61e6ab",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    },
+    "s_ff5ae5afb544bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f74ad-141a-7d81-ac30-65b0f84ba151",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
