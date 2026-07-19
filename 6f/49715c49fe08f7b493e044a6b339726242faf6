@@ -1,0 +1,24 @@
+Packages/tech.elicase.avatar-toolkit/Editor/SkinnedMeshRendererBlendShapeSearchEditor.cs
+  s_7beacca15d1c05::t_0438095d819d8a 5,21-23,30,79,84-85,87,127-132,142-146,151,155,167,171-403,406-410,412-413,484
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6f49715c49fe08f7b493e044a6b339726242faf6",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_7beacca15d1c05": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f7869-6013-7670-b565-cf6b79150b93",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
