@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d41408c61e442da88eb40135100fd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  style: 1
+  style: 0
   followUnityTheme: 1
   useDarkTheme: 1
   pluginExtensionsEnabled: 1

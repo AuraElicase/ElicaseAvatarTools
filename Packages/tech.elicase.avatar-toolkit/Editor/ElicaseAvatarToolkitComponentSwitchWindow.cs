@@ -97,6 +97,7 @@ namespace BlendShapeSearch
         {
             titleContent = new UnityEngine.GUIContent(Text("window.settings"));
             ElicaseThemeManager.Apply(rootVisualElement);
+            rootVisualElement.style.backgroundColor = GetUnityEditorBackgroundColor();
             rootVisualElement.Clear();
             rootVisualElement.style.paddingLeft = 10f;
             rootVisualElement.style.paddingRight = 10f;
@@ -116,6 +117,13 @@ namespace BlendShapeSearch
             }
 
             rootVisualElement.Add(panel);
+        }
+
+        private static UnityEngine.Color GetUnityEditorBackgroundColor()
+        {
+            return EditorGUIUtility.isProSkin
+                ? new UnityEngine.Color32(56, 56, 56, 255)
+                : new UnityEngine.Color32(194, 194, 194, 255);
         }
 
         private static ElicaseSelectField CreateLanguageSelect()
