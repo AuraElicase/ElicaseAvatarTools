@@ -1,0 +1,26 @@
+Packages/tech.elicase.avatar-toolkit/package.json
+  h_8e6780fc7b4bb1 4
+Packages/tech.elicase.avatar-toolkit/Editor/SkinnedMeshRendererBlendShapeSearchEditor.cs
+  s_c46dc4185bb5e7::t_294d2b9f93d901 24,27-28,35,37-46,76,321-322,325-326,359-366,368-370,372-388,391,394-398,400-402,405,409,412-417,420,425,428-429,482-484,486,489,502-555,561,566,570,576,579,582,584,586-587
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "96bc4ab68f917d8063598449ff9611b002c41425",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_c46dc4185bb5e7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f87f6-245f-7950-a837-b362e213dab3",
+        "model": "unknown"
+      },
+      "human_author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
