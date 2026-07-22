@@ -21,15 +21,29 @@ namespace BlendShapeSearch
         private const string InspectorFoldoutToggleClassName = "unity-foldout__toggle--inspector";
         private const string InspectorPropertyClassName = "unity-property-field__inspector-property";
         private const string InspectorFoldoutClassName = "unity-foldout--depth-1";
+        private const float BlendShapeListViewportHeight = 300f;
 
         private readonly HashSet<int> selectedBlendShapeIndices = new HashSet<int>();
+        private readonly List<BlendShapeEntry> blendShapeEntries = new List<BlendShapeEntry>();
+        private readonly List<BlendShapeEntry> filteredBlendShapeEntries = new List<BlendShapeEntry>();
         private Editor builtInEditor;
         private VisualElement root;
         private VisualElement blendShapeList;
         private Button exportButton;
         private IMGUIContainer enhancedInspector;
         private Mesh selectedMesh;
+        private Mesh cachedBlendShapeMesh;
         private string searchText = string.Empty;
+        private Vector2 blendShapeScrollPosition;
+
+        private sealed class BlendShapeEntry
+        {
+            internal int Index;
+            internal string SourceName;
+            internal string DisplayName;
+            internal float SliderMinimum;
+            internal float SliderMaximum;
+        }
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -59,6 +73,7 @@ namespace BlendShapeSearch
         {
             if (root != null)
             {
+                cachedBlendShapeMesh = null;
                 BuildInspector();
             }
         }
@@ -303,7 +318,11 @@ namespace BlendShapeSearch
             if (EditorGUI.EndChangeCheck())
             {
                 searchText = newSearchText ?? string.Empty;
+                blendShapeScrollPosition = Vector2.zero;
+                UpdateFilteredBlendShapeEntries();
             }
+
+            EnsureBlendShapeCache(renderer.sharedMesh);
 
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
             GUILayout.Space(EditorGUI.indentLevel * 15f);
@@ -337,68 +356,79 @@ namespace BlendShapeSearch
 
             EditorGUILayout.EndHorizontal();
 
-            var mesh = renderer.sharedMesh;
-            for (var index = 0; index < mesh.blendShapeCount; index++)
-            {
-                var sourceName = mesh.GetBlendShapeName(index);
-                var displayName = BlendShapeSearchLocalization.GetBlendShapeDisplayName(sourceName);
-                if (!MatchesSearch(sourceName, searchText) && !MatchesSearch(displayName, searchText))
-                {
-                    continue;
-                }
-
-                DrawBlendShapeRow(renderer, blendShapeWeights, index, sourceName, displayName);
-            }
+            DrawVirtualizedBlendShapeRows(renderer, blendShapeWeights);
 
             EditorGUI.indentLevel--;
         }
 
-        private void DrawBlendShapeRow(SkinnedMeshRenderer renderer, SerializedProperty blendShapeWeights, int index, string sourceName, string displayName)
+        private void DrawVirtualizedBlendShapeRows(SkinnedMeshRenderer renderer, SerializedProperty blendShapeWeights)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(EditorGUI.indentLevel * 15f);
-            var isSelected = GUILayout.Toggle(selectedBlendShapeIndices.Contains(index), GUIContent.none, GUILayout.Width(16f));
+            if (filteredBlendShapeEntries.Count == 0)
+            {
+                EditorGUILayout.HelpBox(Text("ui.noMatches"), MessageType.Info);
+                return;
+            }
+
+            var rowHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            var totalHeight = filteredBlendShapeEntries.Count * rowHeight;
+            var viewportHeight = Mathf.Min(BlendShapeListViewportHeight, totalHeight);
+            blendShapeScrollPosition = EditorGUILayout.BeginScrollView(blendShapeScrollPosition, GUILayout.Height(viewportHeight));
+            var rowsRect = GUILayoutUtility.GetRect(0f, totalHeight, GUILayout.ExpandWidth(true));
+            var firstVisibleRow = Mathf.Max(0, Mathf.FloorToInt(blendShapeScrollPosition.y / rowHeight));
+            var lastVisibleRow = Mathf.Min(
+                filteredBlendShapeEntries.Count,
+                Mathf.CeilToInt((blendShapeScrollPosition.y + viewportHeight) / rowHeight) + 1);
+            for (var rowIndex = firstVisibleRow; rowIndex < lastVisibleRow; rowIndex++)
+            {
+                var rowRect = new Rect(
+                    rowsRect.x,
+                    rowsRect.y + rowIndex * rowHeight,
+                    rowsRect.width,
+                    EditorGUIUtility.singleLineHeight);
+                DrawBlendShapeRow(renderer, blendShapeWeights, filteredBlendShapeEntries[rowIndex], rowRect);
+            }
+
+            EditorGUILayout.EndScrollView();
+        }
+
+        private void DrawBlendShapeRow(
+            SkinnedMeshRenderer renderer,
+            SerializedProperty blendShapeWeights,
+            BlendShapeEntry blendShape,
+            Rect rowRect)
+        {
+            rowRect = EditorGUI.IndentedRect(rowRect);
+            var toggleRect = new Rect(rowRect.x, rowRect.y, 16f, rowRect.height);
+            var isSelected = EditorGUI.Toggle(toggleRect, selectedBlendShapeIndices.Contains(blendShape.Index));
             if (isSelected)
             {
-                selectedBlendShapeIndices.Add(index);
+                selectedBlendShapeIndices.Add(blendShape.Index);
             }
             else
             {
-                selectedBlendShapeIndices.Remove(index);
+                selectedBlendShapeIndices.Remove(blendShape.Index);
             }
 
-            var sliderMinimum = 0f;
-            var sliderMaximum = 0f;
-            var mesh = renderer.sharedMesh;
-            for (var frameIndex = 0; frameIndex < mesh.GetBlendShapeFrameCount(index); frameIndex++)
-            {
-                var frameWeight = mesh.GetBlendShapeFrameWeight(index, frameIndex);
-                sliderMinimum = Mathf.Min(sliderMinimum, frameWeight);
-                sliderMaximum = Mathf.Max(sliderMaximum, frameWeight);
-            }
-
-            var property = index < blendShapeWeights.arraySize ? blendShapeWeights.GetArrayElementAtIndex(index) : null;
-            var sliderLabel = new GUIContent(displayName, sourceName);
-            var sliderRect = EditorGUILayout.GetControlRect();
-            var previousIndentLevel = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            var property = blendShape.Index < blendShapeWeights.arraySize
+                ? blendShapeWeights.GetArrayElementAtIndex(blendShape.Index)
+                : null;
+            var sliderLabel = new GUIContent(blendShape.DisplayName, blendShape.SourceName);
+            var sliderRect = new Rect(toggleRect.xMax + EditorGUIUtility.standardVerticalSpacing, rowRect.y,
+                rowRect.xMax - toggleRect.xMax - EditorGUIUtility.standardVerticalSpacing, rowRect.height);
             if (property != null)
             {
-                EditorGUI.Slider(sliderRect, property, sliderMinimum, sliderMaximum, sliderLabel);
+                EditorGUI.Slider(sliderRect, property, blendShape.SliderMinimum, blendShape.SliderMaximum, sliderLabel);
             }
             else
             {
                 EditorGUI.BeginChangeCheck();
-                var value = EditorGUI.Slider(sliderRect, sliderLabel, 0f, sliderMinimum, sliderMaximum);
+                var value = EditorGUI.Slider(sliderRect, sliderLabel, 0f, blendShape.SliderMinimum, blendShape.SliderMaximum);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    blendShapeWeights.arraySize = mesh.blendShapeCount;
-                    blendShapeWeights.GetArrayElementAtIndex(index).floatValue = value;
+                    blendShapeWeights.arraySize = renderer.sharedMesh.blendShapeCount;
+                    blendShapeWeights.GetArrayElementAtIndex(blendShape.Index).floatValue = value;
                 }
             }
-            EditorGUI.indentLevel = previousIndentLevel;
-
-            EditorGUILayout.EndHorizontal();
         }
 
         private VisualElement CreateToolbar()
@@ -449,21 +479,14 @@ namespace BlendShapeSearch
                 selectedBlendShapeIndices.Clear();
             }
 
-            var matchCount = 0;
-            for (var index = 0; index < mesh.blendShapeCount; index++)
+            EnsureBlendShapeCache(mesh);
+            UpdateFilteredBlendShapeEntries();
+            foreach (var blendShape in filteredBlendShapeEntries)
             {
-                var sourceName = mesh.GetBlendShapeName(index);
-                var displayName = BlendShapeSearchLocalization.GetBlendShapeDisplayName(sourceName);
-                if (!MatchesSearch(sourceName, searchText) && !MatchesSearch(displayName, searchText))
-                {
-                    continue;
-                }
-
-                blendShapeList.Add(CreateBlendShapeRow(renderer, index, sourceName, displayName));
-                matchCount++;
+                blendShapeList.Add(CreateBlendShapeRow(renderer, blendShape));
             }
 
-            if (matchCount == 0)
+            if (filteredBlendShapeEntries.Count == 0)
             {
                 blendShapeList.Add(new HelpBox(Text("ui.noMatches"), HelpBoxMessageType.Info) { name = EmptyStateName });
             }
@@ -476,39 +499,92 @@ namespace BlendShapeSearch
             return string.IsNullOrEmpty(query) || name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private VisualElement CreateBlendShapeRow(SkinnedMeshRenderer renderer, int index, string sourceName, string displayName)
+        private void EnsureBlendShapeCache(Mesh mesh)
+        {
+            if (cachedBlendShapeMesh == mesh)
+            {
+                return;
+            }
+
+            cachedBlendShapeMesh = mesh;
+            blendShapeEntries.Clear();
+            filteredBlendShapeEntries.Clear();
+            blendShapeScrollPosition = Vector2.zero;
+            if (mesh == null)
+            {
+                return;
+            }
+
+            for (var index = 0; index < mesh.blendShapeCount; index++)
+            {
+                var sliderMinimum = 0f;
+                var sliderMaximum = 0f;
+                for (var frameIndex = 0; frameIndex < mesh.GetBlendShapeFrameCount(index); frameIndex++)
+                {
+                    var frameWeight = mesh.GetBlendShapeFrameWeight(index, frameIndex);
+                    sliderMinimum = Mathf.Min(sliderMinimum, frameWeight);
+                    sliderMaximum = Mathf.Max(sliderMaximum, frameWeight);
+                }
+
+                var sourceName = mesh.GetBlendShapeName(index);
+                blendShapeEntries.Add(new BlendShapeEntry
+                {
+                    Index = index,
+                    SourceName = sourceName,
+                    DisplayName = BlendShapeSearchLocalization.GetBlendShapeDisplayName(sourceName),
+                    SliderMinimum = sliderMinimum,
+                    SliderMaximum = sliderMaximum
+                });
+            }
+
+            UpdateFilteredBlendShapeEntries();
+        }
+
+        private void UpdateFilteredBlendShapeEntries()
+        {
+            filteredBlendShapeEntries.Clear();
+            foreach (var blendShape in blendShapeEntries)
+            {
+                if (MatchesSearch(blendShape.SourceName, searchText) || MatchesSearch(blendShape.DisplayName, searchText))
+                {
+                    filteredBlendShapeEntries.Add(blendShape);
+                }
+            }
+        }
+
+        private VisualElement CreateBlendShapeRow(SkinnedMeshRenderer renderer, BlendShapeEntry blendShape)
         {
             var row = new VisualElement();
             row.style.flexDirection = FlexDirection.Row;
 
             var selectionToggle = new Toggle { tooltip = Text("ui.selectionTooltip") };
-            selectionToggle.SetValueWithoutNotify(selectedBlendShapeIndices.Contains(index));
+            selectionToggle.SetValueWithoutNotify(selectedBlendShapeIndices.Contains(blendShape.Index));
             selectionToggle.RegisterValueChangedCallback(change =>
             {
                 if (change.newValue)
                 {
-                    selectedBlendShapeIndices.Add(index);
+                    selectedBlendShapeIndices.Add(blendShape.Index);
                 }
                 else
                 {
-                    selectedBlendShapeIndices.Remove(index);
+                    selectedBlendShapeIndices.Remove(blendShape.Index);
                 }
 
                 UpdateExportButton();
             });
 
-            var slider = new Slider(displayName, 0f, 100f)
+            var slider = new Slider(blendShape.DisplayName, 0f, 100f)
             {
                 showInputField = true,
-                tooltip = displayName == sourceName ? string.Empty : sourceName
+                tooltip = blendShape.DisplayName == blendShape.SourceName ? string.Empty : blendShape.SourceName
             };
             slider.style.flexGrow = 1f;
-            if (displayName != sourceName)
+            if (blendShape.DisplayName != blendShape.SourceName)
             {
-                slider.labelElement.tooltip = sourceName;
+                slider.labelElement.tooltip = blendShape.SourceName;
             }
-            slider.SetValueWithoutNotify(renderer.GetBlendShapeWeight(index));
-            slider.RegisterValueChangedCallback(change => ApplyBlendShapeWeight(renderer, index, change.newValue));
+            slider.SetValueWithoutNotify(renderer.GetBlendShapeWeight(blendShape.Index));
+            slider.RegisterValueChangedCallback(change => ApplyBlendShapeWeight(renderer, blendShape.Index, change.newValue));
             row.Add(selectionToggle);
             row.Add(slider);
             return row;
