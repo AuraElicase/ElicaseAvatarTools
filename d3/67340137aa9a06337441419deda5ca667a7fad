@@ -1,0 +1,14 @@
+Packages/tech.elicase.avatar-toolkit/package.json
+  h_8e6780fc7b4bb1 13-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d367340137aa9a06337441419deda5ca667a7fad",
+  "prompts": {},
+  "humans": {
+    "h_8e6780fc7b4bb1": {
+      "author": "AuraElicase <auraelicase@outlook.com>"
+    }
+  }
+}
