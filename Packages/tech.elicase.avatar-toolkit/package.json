@@ -10,7 +10,7 @@
     "email": "auraelicase@outlook.com",
     "url": "https://vcc.elicase.tech"
   },
-  "dependencies": {
-    "tech.elicase.elicase-ui-theme-for-unity": "0.3.3"
+  "vpmDependencies": {
+    "tech.elicase.elicase-ui-theme-for-unity": ">=0.3.3"
   }
 }
